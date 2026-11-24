@@ -35,6 +35,10 @@ pub enum Command {
         h: u32,
         color: String,
     },
+    Polygon {
+        points: Vec<[i32; 2]>,
+        color: String,
+    },
     Line {
         from: [i32; 2],
         to: [i32; 2],
@@ -106,6 +110,43 @@ pub fn render(doc: &Document) -> Result<RgbaImage, String> {
                     for py in y1..y2 {
                         for px in x1..x2 {
                             put(&mut im, px, py, c);
+                        }
+                    }
+                }
+                Command::Polygon { points, color } => {
+                    if points.len() < 3 || points.len() > 256 {
+                        return Err("polygon must have between 3 and 256 vertices".into());
+                    }
+                    let c = get(color)?;
+                    let min_x = i64::from(points.iter().map(|p| p[0]).min().unwrap()).max(0);
+                    let max_x = i64::from(points.iter().map(|p| p[0]).max().unwrap())
+                        .min(i64::from(im.width()));
+                    let min_y = i64::from(points.iter().map(|p| p[1]).min().unwrap()).max(0);
+                    let max_y = i64::from(points.iter().map(|p| p[1]).max().unwrap())
+                        .min(i64::from(im.height()));
+                    for y in min_y..max_y {
+                        for x in min_x..max_x {
+                            let (cx, cy) = (i128::from(2 * x + 1), i128::from(2 * y + 1));
+                            let mut inside = false;
+                            for i in 0..points.len() {
+                                let a = points[i];
+                                let b = points[(i + 1) % points.len()];
+                                let (ax, ay, bx, by) = (
+                                    i128::from(a[0]) * 2,
+                                    i128::from(a[1]) * 2,
+                                    i128::from(b[0]) * 2,
+                                    i128::from(b[1]) * 2,
+                                );
+                                if (ay > cy) != (by > cy) {
+                                    let cross = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
+                                    if (by > ay && cross > 0) || (by < ay && cross < 0) {
+                                        inside = !inside;
+                                    }
+                                }
+                            }
+                            if inside {
+                                put(&mut im, x, y, c);
+                            }
                         }
                     }
                 }
