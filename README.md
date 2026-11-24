@@ -27,3 +27,7 @@ Supported commands: `pixel`, `rect` (width and height), `line` (integer endpoint
 ## Next experiment
 
 Compare an agent drawing the same isometric chair and matching sofa using this format, a plain drawing script, and relevant references. Record outputs, prompts, model, iterations and human ratings. This tests whether dedicated tools help before investing in an expanded engine.
+
+## Recreation experiment
+
+See the [isometric chair recreation experiment](benchmarks/isometric-chair/README.md) for a CC0 reference, an editable redraw, a side-by-side preview, and reproducible pixel comparisons.
