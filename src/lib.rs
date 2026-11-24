@@ -1,5 +1,6 @@
 //! An experimental hybrid pixel-art document and renderer.
 pub mod inspect;
+pub mod iso;
 use image::{Rgba, RgbaImage};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -9,6 +10,8 @@ pub struct Document {
     pub version: u32,
     pub canvas: Canvas,
     pub palette: BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub materials: BTreeMap<String, iso::Material>,
     pub layers: Vec<Layer>,
 }
 #[derive(Debug, Serialize, Deserialize)]
@@ -24,6 +27,12 @@ pub struct Layer {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case")]
 pub enum Command {
+    IsoScene {
+        origin: [i32; 2],
+        boxes: Vec<iso::IsoBox>,
+        #[serde(default)]
+        outline: bool,
+    },
     Pixel {
         x: i32,
         y: i32,
@@ -94,6 +103,13 @@ pub fn render(doc: &Document) -> Result<RgbaImage, String> {
     for layer in &doc.layers {
         for cmd in &layer.commands {
             match cmd {
+                Command::IsoScene {
+                    origin,
+                    boxes,
+                    outline,
+                } => {
+                    iso::draw_scene(&mut im, *origin, boxes, &doc.materials, &palette, *outline)?;
+                }
                 Command::Pixel { x, y, color } => {
                     put(&mut im, i64::from(*x), i64::from(*y), get(color)?)
                 }
@@ -249,6 +265,7 @@ pub fn import_image(im: &RgbaImage) -> Result<Document, String> {
             height: im.height(),
         },
         palette,
+        materials: BTreeMap::new(),
         layers: vec![Layer {
             name: "imported pixels".into(),
             commands: vec![Command::Grid {

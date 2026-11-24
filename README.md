@@ -49,3 +49,24 @@ The `top` and `bottom` reports scan each column for its first and last selected 
 These are **observations, not errors or aesthetic scores**. Endpoint runs are intentionally not flagged, deliberate changes can look irregular, and clipping a region can change results. Only upper/lower outermost contours of the selected mask are examined: this does not trace holes, multiple intervals per column, vertical run patterns, or all internal color boundaries. A color mask can expose some internal shapes, but visually inspect the output. Selecting a tight region around an edge can make the report easier to interpret.
 
 For example, the couch's full silhouette reports a possible bottom-edge interruption at `(49..50, 24)` in the current image. [This preview](examples/inspection/couch-observation.png) marks the reported run in red. It is a location to inspect, not a claim that this corner should be changed.
+
+## Isometric box scenes
+
+`iso_scene` lets an agent describe furniture as boxes in shared 3D grid coordinates. All boxes in the same scene are projected at a 2:1 pixel slope and depth-tested together. Each material names four palette entries: `top`, `left` (the +x face, on the right of the image), `right` (the +y face, on the left), and `outline`. These explicit face colors are a simple fixed lighting convention, not a simulated light.
+
+```json
+{
+  "materials": {"wood": {"top":"highlight", "left":"wood", "right":"shadow", "outline":"ink"}},
+  "layers": [{"name":"furniture", "commands":[
+    {"op":"iso_scene", "origin":[32,40], "outline":true, "boxes":[
+      {"x":0,"y":0,"z":0,"w":6,"d":4,"h":2,"material":"wood"}
+    ]}
+  ]}]
+}
+```
+
+This fragment needs a canvas, version, and palette. `origin` is the screen position of grid `(0,0,0)`; projection is `screen_x = origin_x + 2*(x-y)` and `screen_y = origin_y + x+y-2*z`. The dimensions `w`, `d`, and `h` are positive grid units. Boxes within a scene share a depth buffer, so ordering is not needed for ordinary overlaps. Equal-depth ties are resolved deterministically by color and outline. Separate scenes and other drawing commands still follow the existing 2D layer order; they do not share depth.
+
+Set `outline` to `true` to outline the *combined visible silhouette* inside the scene. Touching boxes do not automatically get internal outlines, and a scene clipped by the canvas can get an outline along the clipping boundary. False or omitted disables outlines. Colors for isometric materials must be opaque. Coordinates are limited to -4096..4096, dimensions to 1..1024, scene origin to ±1,000,000 pixels, and a scene to 512 boxes. This first version provides boxes only: no curves, semantic parts, or true lighting.
+
+See [the box furniture examples](examples/isometric-boxes/README.md) and their [comparison](examples/isometric-boxes/comparison.png). They demonstrate structural consistency but are a small exploratory sample, not a controlled comparison of agent performance.
