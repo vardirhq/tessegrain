@@ -1,6 +1,6 @@
 # Isometric shape examples
 
-The barrel and round table combine upright grid-stepped cylinders with wood and metal materials. The stairs use `stairs_x` with five discrete steps. All use the existing scene projection, depth buffer, and silhouette outline. The examples are constructed from shapes in grid space; they do not use hand-placed 2D details.
+The barrel and round table combine upright grid-stepped cylinders with wood and metal materials. The stairs use `stairs_x` with five discrete steps and `reverse: true` so the treads face the viewer. All use the existing scene projection, depth buffer, and silhouette outline. The examples are constructed from shapes in grid space; they do not use hand-placed 2D details.
 
 ```sh
 cargo run -- render examples/isometric-shapes/barrel.json --output barrel.png

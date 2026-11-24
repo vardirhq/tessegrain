@@ -247,3 +247,50 @@ fn explicit_shape_fields_survive_serialization() {
         render(&copy).unwrap().into_raw()
     );
 }
+
+#[test]
+fn stairs_can_reverse_their_rise_direction() {
+    let forward = doc(
+        r#"[{"shape":"stairs_x","steps":4,"x":0,"y":0,"z":0,"w":8,"d":4,"h":8,"material":"wood"}]"#,
+        false,
+    );
+    let reversed = doc(
+        r#"[{"shape":"stairs_x","steps":4,"reverse":true,"x":0,"y":0,"z":0,"w":8,"d":4,"h":8,"material":"wood"}]"#,
+        false,
+    );
+    assert_ne!(
+        render(&forward).unwrap().into_raw(),
+        render(&reversed).unwrap().into_raw()
+    );
+    let copy: Document = serde_json::from_str(&serde_json::to_string(&reversed).unwrap()).unwrap();
+    assert_eq!(
+        render(&reversed).unwrap().into_raw(),
+        render(&copy).unwrap().into_raw()
+    );
+}
+#[test]
+fn reverse_is_rejected_for_cylinders_and_boxes() {
+    let d = doc(
+        r#"[{"shape":"cylinder","reverse":true,"x":0,"y":0,"z":0,"w":4,"d":4,"h":4,"material":"wood"}]"#,
+        false,
+    );
+    assert!(render(&d).unwrap_err().contains("reverse"));
+}
+
+#[test]
+fn reversed_stairs_match_explicit_descending_boxes() {
+    let stairs = doc(
+        r#"[{"shape":"stairs_x","steps":4,"reverse":true,"x":0,"y":0,"z":0,"w":8,"d":4,"h":8,"material":"wood"}]"#,
+        false,
+    );
+    let manual = doc(
+        r#"[
+      {"x":0,"y":0,"z":0,"w":2,"d":4,"h":8,"material":"wood"},
+      {"x":2,"y":0,"z":0,"w":2,"d":4,"h":6,"material":"wood"},
+      {"x":4,"y":0,"z":0,"w":2,"d":4,"h":4,"material":"wood"},
+      {"x":6,"y":0,"z":0,"w":2,"d":4,"h":2,"material":"wood"}
+    ]"#,
+        false,
+    );
+    assert_eq!(render(&stairs).unwrap(), render(&manual).unwrap());
+}

@@ -28,6 +28,8 @@ pub struct IsoBox {
     pub shape: Shape,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub steps: Option<u32>,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub reverse: bool,
     pub x: i32,
     pub y: i32,
     pub z: i32,
@@ -142,6 +144,9 @@ pub fn draw_scene(
         if !matches!(b.shape, Shape::StairsX | Shape::StairsY) && b.steps.is_some() {
             return Err("steps is only valid for stairs".into());
         }
+        if b.reverse && !matches!(b.shape, Shape::StairsX | Shape::StairsY) {
+            return Err("reverse is only valid for stairs".into());
+        }
         match b.shape {
             Shape::Box => expanded.push(b.clone()),
             Shape::Cylinder => {
@@ -189,7 +194,11 @@ pub fn draw_scene(
                     let mut part = b.clone();
                     part.shape = Shape::Box;
                     part.steps = None;
-                    part.h = (i + 1) * b.h / steps;
+                    part.h = if b.reverse {
+                        (steps - i) * b.h / steps
+                    } else {
+                        (i + 1) * b.h / steps
+                    };
                     if b.shape == Shape::StairsX {
                         part.x += start as i32;
                         part.w = end - start

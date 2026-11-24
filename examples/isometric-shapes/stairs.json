@@ -1,11 +1,59 @@
 {
   "version": 1,
-  "canvas": {"width": 64, "height": 64},
-  "palette": {"top": "#d9ac81", "left": "#ae7352", "right": "#765039", "outline": "#302b2a", "metal_top": "#bec9cb", "metal_left": "#87999a", "metal_right": "#556667"},
-  "materials": {"wood": {"top": "top", "left": "left", "right": "right", "outline": "outline"}, "metal": {"top": "metal_top", "left": "metal_left", "right": "metal_right", "outline": "outline"}},
-  "layers": [{"name": "stairs", "commands": [
-    {"op": "iso_scene", "origin": [32, 42], "outline": true, "boxes": [
-      {"shape": "stairs_x", "steps": 5, "x": 0, "y": 0, "z": 0, "w": 10, "d": 7, "h": 10, "material": "wood"}
-    ]}
-  ]}]
+  "canvas": {
+    "width": 64,
+    "height": 64
+  },
+  "palette": {
+    "top": "#d9ac81",
+    "left": "#ae7352",
+    "right": "#765039",
+    "outline": "#302b2a",
+    "metal_top": "#bec9cb",
+    "metal_left": "#87999a",
+    "metal_right": "#556667"
+  },
+  "materials": {
+    "wood": {
+      "top": "top",
+      "left": "left",
+      "right": "right",
+      "outline": "outline"
+    },
+    "metal": {
+      "top": "metal_top",
+      "left": "metal_left",
+      "right": "metal_right",
+      "outline": "outline"
+    }
+  },
+  "layers": [
+    {
+      "name": "stairs",
+      "commands": [
+        {
+          "op": "iso_scene",
+          "origin": [
+            32,
+            42
+          ],
+          "outline": true,
+          "boxes": [
+            {
+              "shape": "stairs_x",
+              "steps": 5,
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 10,
+              "d": 7,
+              "h": 10,
+              "material": "wood",
+              "reverse": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
