@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "canvas": {"width": 48, "height": 40},
+  "palette": {"dark": "#52381f", "shadow": "#79502e", "wood": "#a1683e", "light": "#d89c75"},
+  "layers": [
+    {"name": "legs", "commands": [
+      {"op": "polygon", "points": [[6, 27], [8, 28], [8, 37], [6, 36]], "color": "dark"},
+      {"op": "line", "from": [7, 29], "to": [7, 35], "color": "light"},
+      {"op": "polygon", "points": [[16, 32], [18, 33], [18, 42], [16, 41]], "color": "dark"},
+      {"op": "line", "from": [17, 34], "to": [17, 40], "color": "light"},
+      {"op": "polygon", "points": [[36, 22], [38, 23], [38, 32], [36, 31]], "color": "dark"},
+      {"op": "line", "from": [37, 24], "to": [37, 30], "color": "light"},
+      {"op": "polygon", "points": [[26, 17], [28, 18], [28, 27], [26, 26]], "color": "dark"},
+      {"op": "line", "from": [27, 19], "to": [27, 25], "color": "light"}
+    ]},
+    {"name": "backrest", "commands": [
+      {"op": "polygon", "points": [[5, 13], [28, 1], [30, 2], [30, 17], [7, 29], [5, 28]], "color": "dark"},
+      {"op": "polygon", "points": [[6, 13], [28, 2], [29, 3], [29, 15], [7, 26], [6, 25]], "color": "wood"},
+      {"op": "line", "from": [7, 13], "to": [27, 3], "color": "light"},
+      {"op": "line", "from": [6, 14], "to": [6, 26], "color": "dark"},
+      {"op": "polygon", "points": [[7, 15], [14, 11], [14, 20], [7, 24]], "color": "light"},
+      {"op": "polygon", "points": [[8, 15], [13, 12], [13, 19], [8, 22]], "color": "wood"},
+      {"op": "polygon", "points": [[16, 10], [22, 7], [22, 16], [16, 19]], "color": "light"},
+      {"op": "polygon", "points": [[17, 10], [21, 8], [21, 15], [17, 17]], "color": "wood"},
+      {"op": "polygon", "points": [[24, 6], [28, 4], [28, 13], [24, 15]], "color": "light"},
+      {"op": "polygon", "points": [[25, 6], [27, 5], [27, 12], [25, 13]], "color": "wood"}
+    ]},
+    {"name": "seat", "commands": [
+      {"op": "polygon", "points": [[5, 27], [29, 15], [40, 21], [16, 34], [5, 29]], "color": "dark"},
+      {"op": "polygon", "points": [[7, 26], [29, 15], [39, 20], [16, 32]], "color": "wood"},
+      {"op": "polygon", "points": [[7, 27], [16, 32], [16, 34], [7, 30]], "color": "dark"},
+      {"op": "polygon", "points": [[16, 32], [39, 20], [39, 23], [16, 35]], "color": "shadow"},
+      {"op": "line", "from": [7, 26], "to": [16, 31], "color": "light"},
+      {"op": "line", "from": [17, 31], "to": [38, 20], "color": "light"},
+      {"op": "line", "from": [14, 23], "to": [23, 28], "color": "shadow"},
+      {"op": "line", "from": [22, 19], "to": [31, 24], "color": "shadow"}
+    ]},
+    {"name": "armrests", "commands": [
+      {"op": "polygon", "points": [[4, 22], [7, 21], [11, 23], [11, 27], [8, 29], [4, 27]], "color": "dark"},
+      {"op": "polygon", "points": [[5, 22], [7, 22], [10, 23], [8, 24]], "color": "light"},
+      {"op": "polygon", "points": [[5, 23], [8, 25], [8, 27], [5, 26]], "color": "wood"},
+      {"op": "polygon", "points": [[29, 15], [32, 14], [40, 18], [40, 23], [37, 25], [29, 21]], "color": "dark"},
+      {"op": "polygon", "points": [[30, 15], [32, 15], [39, 18], [37, 19]], "color": "light"},
+      {"op": "polygon", "points": [[30, 16], [37, 20], [37, 23], [30, 19]], "color": "wood"}
+    ]}
+  ]
+}
