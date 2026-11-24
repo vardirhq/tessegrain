@@ -1,0 +1,272 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 32,
+    "height": 32
+  },
+  "palette": {
+    "dark": "#52381f",
+    "wood": "#a1683e",
+    "light": "#d89c75",
+    "side": "#79502e"
+  },
+  "layers": [
+    {
+      "name": "backrest",
+      "commands": [
+        {
+          "op": "polygon",
+          "points": [
+            [
+              7,
+              5
+            ],
+            [
+              16,
+              0
+            ],
+            [
+              16,
+              12
+            ],
+            [
+              7,
+              17
+            ]
+          ],
+          "color": "wood"
+        },
+        {
+          "op": "polygon",
+          "points": [
+            [
+              8,
+              6
+            ],
+            [
+              16,
+              2
+            ],
+            [
+              16,
+              10
+            ],
+            [
+              8,
+              15
+            ]
+          ],
+          "color": "wood"
+        },
+        {
+          "op": "line",
+          "from": [
+            8,
+            5
+          ],
+          "to": [
+            8,
+            12
+          ],
+          "color": "light"
+        },
+        {
+          "op": "line",
+          "from": [
+            15,
+            10
+          ],
+          "to": [
+            15,
+            13
+          ],
+          "color": "dark"
+        },
+        {
+          "op": "line",
+          "from": [
+            7,
+            5
+          ],
+          "to": [
+            7,
+            18
+          ],
+          "color": "dark"
+        }
+      ]
+    },
+    {
+      "name": "legs",
+      "commands": [
+        {
+          "op": "line",
+          "from": [
+            8,
+            19
+          ],
+          "to": [
+            8,
+            27
+          ],
+          "color": "dark"
+        },
+        {
+          "op": "line",
+          "from": [
+            9,
+            19
+          ],
+          "to": [
+            9,
+            27
+          ],
+          "color": "light"
+        },
+        {
+          "op": "line",
+          "from": [
+            15,
+            21
+          ],
+          "to": [
+            15,
+            30
+          ],
+          "color": "dark"
+        },
+        {
+          "op": "line",
+          "from": [
+            16,
+            21
+          ],
+          "to": [
+            16,
+            30
+          ],
+          "color": "light"
+        },
+        {
+          "op": "line",
+          "from": [
+            22,
+            19
+          ],
+          "to": [
+            22,
+            27
+          ],
+          "color": "dark"
+        },
+        {
+          "op": "line",
+          "from": [
+            23,
+            19
+          ],
+          "to": [
+            23,
+            27
+          ],
+          "color": "light"
+        }
+      ]
+    },
+    {
+      "name": "seat",
+      "commands": [
+        {
+          "op": "polygon",
+          "points": [
+            [
+              7,
+              18
+            ],
+            [
+              16,
+              13
+            ],
+            [
+              25,
+              18
+            ],
+            [
+              16,
+              22
+            ]
+          ],
+          "color": "wood"
+        },
+        {
+          "op": "polygon",
+          "points": [
+            [
+              7,
+              17
+            ],
+            [
+              16,
+              22
+            ],
+            [
+              16,
+              24
+            ],
+            [
+              7,
+              19
+            ]
+          ],
+          "color": "dark"
+        },
+        {
+          "op": "polygon",
+          "points": [
+            [
+              16,
+              22
+            ],
+            [
+              25,
+              17
+            ],
+            [
+              25,
+              19
+            ],
+            [
+              16,
+              24
+            ]
+          ],
+          "color": "side"
+        },
+        {
+          "op": "line",
+          "from": [
+            8,
+            17
+          ],
+          "to": [
+            16,
+            21
+          ],
+          "color": "light"
+        },
+        {
+          "op": "line",
+          "from": [
+            17,
+            21
+          ],
+          "to": [
+            23,
+            18
+          ],
+          "color": "light"
+        }
+      ]
+    }
+  ]
+}
