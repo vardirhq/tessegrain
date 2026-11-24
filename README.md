@@ -31,3 +31,21 @@ Compare an agent drawing the same isometric chair and matching sofa using this f
 ## Recreation experiment
 
 See the [isometric chair recreation experiment](benchmarks/isometric-chair/README.md) for a CC0 reference, an editable redraw, a side-by-side preview, and reproducible pixel comparisons.
+
+## Inspect rendered pixels
+
+`inspect` renders an artwork JSON, or reads a PNG, and prints a JSON report:
+
+```sh
+cargo run -- inspect examples/matching-couch/couch.json
+cargo run -- inspect examples/matching-couch/couch.png --region 0,0,60,48
+cargo run -- inspect examples/matching-couch/couch.png --color '#8cb2a5'
+```
+
+The optional region is `x,y,width,height`, must be entirely inside the canvas, and output coordinates remain canvas-relative. `--color '#RRGGBB'` selects that exact RGB with any nonzero alpha; without it, all pixels with alpha greater than zero count as visible. Counts and colors are for the selected region and color mask. A partially transparent pixel counts as visible, and isolated means no other selected pixel in its eight neighboring positions **inside the selected region**. Thus crop boundaries can create isolation.
+
+The `top` and `bottom` reports scan each column for its first and last selected pixel in the region. They group consecutive columns at the same y into horizontal runs, breaking chains at empty columns, vertical jumps larger than one pixel, or direction changes. An observation flags an interior run when its immediate neighbors are the same length but it differs. A run's inclusive `x_start` and `x_end` and `y` locate it in the source canvas; `chain` distinguishes discontinuous paths. `selection.rgb` records the optional mask.
+
+These are **observations, not errors or aesthetic scores**. Endpoint runs are intentionally not flagged, deliberate changes can look irregular, and clipping a region can change results. Only upper/lower outermost contours of the selected mask are examined: this does not trace holes, multiple intervals per column, vertical run patterns, or all internal color boundaries. A color mask can expose some internal shapes, but visually inspect the output. Selecting a tight region around an edge can make the report easier to interpret.
+
+For example, the couch's full silhouette reports a possible bottom-edge interruption at `(49..50, 24)` in the current image. [This preview](examples/inspection/couch-observation.png) marks the reported run in red. It is a location to inspect, not a claim that this corner should be changed.

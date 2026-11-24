@@ -1,4 +1,5 @@
 //! An experimental hybrid pixel-art document and renderer.
+pub mod inspect;
 use image::{Rgba, RgbaImage};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
