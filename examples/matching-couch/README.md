@@ -1,10 +1,12 @@
-# A couch to match the reference chair
+# A couch inspired by the reference chair
 
-This wooden settee is a new drawing built from polygons and lines with the same four-color palette and a comparable isometric perspective to the [reference chair](../../benchmarks/isometric-chair/README.md). It is an exploratory attempt to make a new object in the same style, not a recreation or a claim of an objectively verified style match.
+This two-seat couch is a separate drawing built with Tessegrain polygons and lines. It borrows the reference chair's isometric direction, wood colors and pixel scale, and adds a muted green fabric palette to make the cushions and backrest distinct.
 
-- `couch.json`: editable Tessegrain source, 48×40 pixels.
+The first attempt resembled a wooden bench. The revised version has shorter feet, a deeper upholstered seat, two back cushions, and connected armrests. The side-by-side preview is a visual check of style and proportions, not an objective style-match benchmark.
+
+- `couch.json`: editable Tessegrain source, 56×46 pixels.
 - `couch.png`: native-size transparent PNG.
-- `comparison.png`: the reference chair and couch at the same 8× nearest-neighbor scale, aligned along the baseline.
+- `comparison.png`: reference chair and couch at the same 8× nearest-neighbor scale, aligned along the baseline.
 
 ```sh
 cargo run -- validate examples/matching-couch/couch.json
