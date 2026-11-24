@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 64,
+    "height": 64
+  },
+  "palette": {
+    "top": "#d9ac81",
+    "left": "#ae7352",
+    "right": "#765039",
+    "outline": "#302b2a",
+    "metal_top": "#bec9cb",
+    "metal_left": "#87999a",
+    "metal_right": "#556667"
+  },
+  "materials": {
+    "wood": {
+      "top": "top",
+      "left": "left",
+      "right": "right",
+      "outline": "outline"
+    },
+    "metal": {
+      "top": "metal_top",
+      "left": "metal_left",
+      "right": "metal_right",
+      "outline": "outline"
+    }
+  },
+  "layers": [
+    {
+      "name": "barrel",
+      "commands": [
+        {
+          "op": "iso_scene",
+          "origin": [
+            32,
+            42
+          ],
+          "outline": true,
+          "boxes": [
+            {
+              "shape": "cylinder",
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 8,
+              "d": 8,
+              "h": 2,
+              "material": "wood"
+            },
+            {
+              "shape": "cylinder",
+              "x": 0,
+              "y": 0,
+              "z": 2,
+              "w": 8,
+              "d": 8,
+              "h": 1,
+              "material": "metal"
+            },
+            {
+              "shape": "cylinder",
+              "x": 0,
+              "y": 0,
+              "z": 3,
+              "w": 8,
+              "d": 8,
+              "h": 3,
+              "material": "wood"
+            },
+            {
+              "shape": "cylinder",
+              "x": 0,
+              "y": 0,
+              "z": 6,
+              "w": 8,
+              "d": 8,
+              "h": 1,
+              "material": "metal"
+            },
+            {
+              "shape": "cylinder",
+              "x": 0,
+              "y": 0,
+              "z": 7,
+              "w": 8,
+              "d": 8,
+              "h": 1,
+              "material": "wood"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
