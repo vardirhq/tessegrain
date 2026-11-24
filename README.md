@@ -22,7 +22,7 @@ Rendering and imports are local. Building requires downloading dependencies unle
 
 Documents have `version: 1`, integer `canvas` dimensions, named hexadecimal RGB or RGBA palette entries, and ordered layers containing ordered commands. The canvas starts transparent. Commands write RGBA values directly (including partially transparent values); there is no alpha blending between layers. Transparent grid symbols skip drawing; use a named transparent palette color to write transparent pixels.
 
-Supported commands: `pixel`, `rect` (width and height), `line` (integer endpoints), and `grid` (equal-width character rows and a symbol-to-palette mapping). Operations are clipped to the canvas. See [examples/chair.json](examples/chair.json). The included example is a simple front-facing chair to exercise the format, not a quality benchmark.
+Supported commands: `pixel`, `rect` (width and height), `line` (integer endpoints), `polygon` (3–256 vertices), and `grid` (equal-width character rows and a symbol-to-palette mapping). Operations are clipped to the canvas. Polygons use the even–odd fill rule, testing pixel centers with half-open edge crossings; vertices lie on pixel boundaries. See [examples/chair.json](examples/chair.json). See also [the isometric chair source](examples/isometric-chair.json) and its [8× preview](examples/isometric-chair.png). These examples exercise the format; they are not quality benchmarks.
 
 ## Next experiment
 

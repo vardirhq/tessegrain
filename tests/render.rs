@@ -32,3 +32,28 @@ fn undefined_grid_symbols_are_errors() {
     let doc: Document = serde_json::from_str(r#"{"version":1,"canvas":{"width":1,"height":1},"palette":{},"layers":[{"name":"x","commands":[{"op":"grid","x":0,"y":0,"colors":{},"rows":["X"]}]}]}"#).unwrap();
     assert!(render(&doc).unwrap_err().contains("grid"));
 }
+
+#[test]
+fn polygon_fills_pixel_centers_with_even_odd_rule_and_clips() {
+    let doc: Document = serde_json::from_str(r##"{"version":1,"canvas":{"width":4,"height":4},"palette":{"ink":"#ff0000"},"layers":[{"name":"x","commands":[{"op":"polygon","points":[[-1,0],[3,0],[3,3],[-1,3]],"color":"ink"}]}]}"##).unwrap();
+    let im = render(&doc).unwrap();
+    assert_eq!(im.get_pixel(0, 0), &Rgba([255, 0, 0, 255]));
+    assert_eq!(im.get_pixel(2, 2), &Rgba([255, 0, 0, 255]));
+    assert_eq!(im.get_pixel(3, 2), &Rgba([0, 0, 0, 0]));
+    assert_eq!(im.get_pixel(1, 3), &Rgba([0, 0, 0, 0]));
+}
+
+#[test]
+fn polygon_rejects_too_few_vertices() {
+    let doc: Document = serde_json::from_str(r##"{"version":1,"canvas":{"width":2,"height":2},"palette":{"ink":"#ff0000"},"layers":[{"name":"x","commands":[{"op":"polygon","points":[[0,0],[1,1]],"color":"ink"}]}]}"##).unwrap();
+    assert!(render(&doc).unwrap_err().contains("polygon"));
+}
+
+#[test]
+fn concave_polygon_leaves_its_notch_empty() {
+    let doc: Document = serde_json::from_str(r##"{"version":1,"canvas":{"width":4,"height":4},"palette":{"ink":"#ff0000"},"layers":[{"name":"x","commands":[{"op":"polygon","points":[[0,0],[4,0],[4,1],[1,1],[1,4],[0,4]],"color":"ink"}]}]}"##).unwrap();
+    let im = render(&doc).unwrap();
+    assert_eq!(im.get_pixel(3, 0), &Rgba([255, 0, 0, 255]));
+    assert_eq!(im.get_pixel(0, 3), &Rgba([255, 0, 0, 255]));
+    assert_eq!(im.get_pixel(2, 2), &Rgba([0, 0, 0, 0]));
+}
