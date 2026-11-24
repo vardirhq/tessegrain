@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "canvas": {"width": 80, "height": 64},
+  "palette": {"wood_top": "#d89c75", "wood_left": "#a1683e", "wood_right": "#79502e", "ink": "#52381f", "fabric_top": "#b2d0bc", "fabric_left": "#8cb2a5", "fabric_right": "#62847c"},
+  "materials": {"wood": {"top": "wood_top", "left": "wood_left", "right": "wood_right", "outline": "ink"}, "fabric": {"top": "fabric_top", "left": "fabric_left", "right": "fabric_right", "outline": "ink"}},
+  "layers": [
+    {"name": "couch", "commands": [
+      {"op":"iso_scene","origin":[30, 38],"outline":true,"boxes":[
+        {"x": 0, "y": 0, "z": 0, "w": 2, "d": 2, "h": 4, "material": "wood"},
+        {"x": 12, "y": 0, "z": 0, "w": 2, "d": 2, "h": 4, "material": "wood"},
+        {"x": 0, "y": 5, "z": 0, "w": 2, "d": 2, "h": 4, "material": "wood"},
+        {"x": 12, "y": 5, "z": 0, "w": 2, "d": 2, "h": 4, "material": "wood"},
+        {"x": 0, "y": 0, "z": 4, "w": 14, "d": 7, "h": 2, "material": "wood"},
+        {"x": 0, "y": 0, "z": 6, "w": 14, "d": 1, "h": 7, "material": "fabric"},
+        {"x": 0, "y": 0, "z": 6, "w": 1, "d": 7, "h": 3, "material": "wood"},
+        {"x": 13, "y": 0, "z": 6, "w": 1, "d": 7, "h": 3, "material": "wood"},
+        {"x": 1, "y": 1, "z": 6, "w": 5, "d": 5, "h": 1, "material": "fabric"},
+        {"x": 6, "y": 1, "z": 6, "w": 7, "d": 5, "h": 1, "material": "fabric"}
+      ]}
+    ]},
+    {"name": "2D surface details", "commands": [
+      {"op": "polygon", "points": [[31, 16], [41, 21], [41, 29], [31, 24]], "color": "fabric_left"},
+      {"op": "polygon", "points": [[43, 22], [53, 27], [53, 34], [43, 29]], "color": "fabric_left"},
+      {"op": "line", "from": [40, 31], "to": [32, 35], "color": "fabric_right"},
+      {"op": "line", "from": [20, 34], "to": [20, 39], "color": "wood_left"},
+      {"op": "line", "from": [53, 39], "to": [53, 45], "color": "wood_top"}
+    ]}
+  ]
+}
