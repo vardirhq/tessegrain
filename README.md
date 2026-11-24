@@ -67,6 +67,19 @@ For example, the couch's full silhouette reports a possible bottom-edge interrup
 
 This fragment needs a canvas, version, and palette. `origin` is the screen position of grid `(0,0,0)`; projection is `screen_x = origin_x + 2*(x-y)` and `screen_y = origin_y + x+y-2*z`. The dimensions `w`, `d`, and `h` are positive grid units. Boxes within a scene share a depth buffer, so ordering is not needed for ordinary overlaps. Equal-depth ties are resolved deterministically by color and outline. Separate scenes and other drawing commands still follow the existing 2D layer order; they do not share depth.
 
-Set `outline` to `true` to outline the *combined visible silhouette* inside the scene. Touching boxes do not automatically get internal outlines, and a scene clipped by the canvas can get an outline along the clipping boundary. False or omitted disables outlines. Colors for isometric materials must be opaque. Coordinates are limited to -4096..4096, dimensions to 1..1024, scene origin to ±1,000,000 pixels, and a scene to 512 boxes. This first version provides boxes only: no curves, semantic parts, or true lighting.
+Set `outline` to `true` to outline the *combined visible silhouette* inside the scene. Touching boxes do not automatically get internal outlines, and a scene clipped by the canvas can get an outline along the clipping boundary. False or omitted disables outlines. Colors for isometric materials must be opaque. Coordinates are limited to -4096..4096, dimensions to 1..1024, scene origin to ±1,000,000 pixels, and a scene to 512 boxes. The scene also supports pixel-stepped cylinders and staircases; see below. Smooth wedges, semantic parts, and true lighting are not yet supported.
 
 See [the box furniture examples](examples/isometric-boxes/README.md) and their [comparison](examples/isometric-boxes/comparison.png). They demonstrate structural consistency but are a small exploratory sample, not a controlled comparison of agent performance.
+
+### More isometric shapes
+
+Entries in `boxes` may optionally specify `shape`: `box` (the default), `cylinder`, `stairs_x`, or `stairs_y`. They share the same `x`, `y`, `z`, `w`, `d`, `h`, and `material` fields and are depth-tested with boxes. For example:
+
+```json
+{"shape":"cylinder", "x":0, "y":0, "z":0, "w":8, "d":8, "h":4, "material":"wood"}
+{"shape":"stairs_x", "x":0, "y":0, "z":0, "w":8, "d":4, "h":8, "steps":4, "material":"wood"}
+```
+
+A cylinder is an upright extruded, grid-sampled ellipse, with `w` and `d` as its footprint dimensions; each must be at most 64 grid units. Its sides are faceted along the grid, not smoothly shaded. `stairs_x` and `stairs_y` ascend in the positive x or y direction. `steps` is required and must be between 1 and the smallest of 64, the length on the chosen axis, and `h`. Width and height are distributed across steps using integer division. These are stepped shapes, not smooth wedges. `steps` is rejected for boxes and cylinders. At most 4096 expanded box sections may appear in a scene, in addition to the 512 input-shape limit.
+
+[The shape showcase](examples/isometric-shapes/showcase.png) contains a barrel, a round table, and stairs; their editable JSON is alongside it.

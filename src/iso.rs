@@ -10,8 +10,24 @@ pub struct Material {
     pub right: String,
     pub outline: String,
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Shape {
+    #[default]
+    Box,
+    Cylinder,
+    StairsX,
+    StairsY,
+}
+fn is_box(shape: &Shape) -> bool {
+    *shape == Shape::Box
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct IsoBox {
+    #[serde(default, skip_serializing_if = "is_box")]
+    pub shape: Shape,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub steps: Option<u32>,
     pub x: i32,
     pub y: i32,
     pub z: i32,
@@ -115,8 +131,7 @@ pub fn draw_scene(
     if origin.iter().any(|n| n.unsigned_abs() > 1_000_000) {
         return Err("iso_scene origin outside supported range".into());
     }
-    let (width, height) = image.dimensions();
-    let mut pixels = vec![None; width as usize * height as usize];
+    let mut expanded = Vec::new();
     for b in boxes {
         if [b.w, b.d, b.h].iter().any(|&n| n == 0 || n > 1024) {
             return Err("box dimensions must be between 1 and 1024".into());
@@ -124,6 +139,75 @@ pub fn draw_scene(
         if [b.x, b.y, b.z].iter().any(|n| n.unsigned_abs() > 4096) {
             return Err("box coordinates must be between -4096 and 4096".into());
         }
+        if !matches!(b.shape, Shape::StairsX | Shape::StairsY) && b.steps.is_some() {
+            return Err("steps is only valid for stairs".into());
+        }
+        match b.shape {
+            Shape::Box => expanded.push(b.clone()),
+            Shape::Cylinder => {
+                if b.w > 64 || b.d > 64 {
+                    return Err("cylinder width and depth must be at most 64".into());
+                }
+                let (w, d) = (i64::from(b.w), i64::from(b.d));
+                for row in 0..b.d {
+                    let dy = 2 * i64::from(row) + 1 - d;
+                    let mut start = None;
+                    for col in 0..b.w {
+                        let dx = 2 * i64::from(col) + 1 - w;
+                        if dx * dx * d * d + dy * dy * w * w <= w * w * d * d {
+                            start.get_or_insert(col);
+                        } else if let Some(first) = start.take() {
+                            let mut part = b.clone();
+                            part.x += first as i32;
+                            part.y += row as i32;
+                            part.w = col - first;
+                            part.d = 1;
+                            part.shape = Shape::Box;
+                            expanded.push(part);
+                        }
+                    }
+                    if let Some(first) = start {
+                        let mut part = b.clone();
+                        part.x += first as i32;
+                        part.y += row as i32;
+                        part.w = b.w - first;
+                        part.d = 1;
+                        part.shape = Shape::Box;
+                        expanded.push(part);
+                    }
+                }
+            }
+            Shape::StairsX | Shape::StairsY => {
+                let length = if b.shape == Shape::StairsX { b.w } else { b.d };
+                let steps = b.steps.ok_or("stairs require steps")?;
+                if steps == 0 || steps > 64 || steps > length || steps > b.h {
+                    return Err("stairs steps must be 1..=min(64, length, height)".into());
+                }
+                for i in 0..steps {
+                    let start = i * length / steps;
+                    let end = (i + 1) * length / steps;
+                    let mut part = b.clone();
+                    part.shape = Shape::Box;
+                    part.steps = None;
+                    part.h = (i + 1) * b.h / steps;
+                    if b.shape == Shape::StairsX {
+                        part.x += start as i32;
+                        part.w = end - start
+                    } else {
+                        part.y += start as i32;
+                        part.d = end - start
+                    }
+                    expanded.push(part);
+                }
+            }
+        }
+        if expanded.len() > 4096 {
+            return Err("iso_scene exceeds 4096 expanded box sections".into());
+        }
+    }
+    let (width, height) = image.dimensions();
+    let mut pixels = vec![None; width as usize * height as usize];
+    for b in &expanded {
         let m = materials
             .get(&b.material)
             .ok_or_else(|| format!("unknown material: {}", b.material))?;

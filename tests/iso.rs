@@ -122,3 +122,128 @@ fn touching_boxes_share_a_silhouette_without_internal_outlines() {
     );
     assert_eq!(render(&whole).unwrap(), render(&split).unwrap());
 }
+
+#[test]
+fn cylinder_has_rounder_footprint_than_its_bounding_box() {
+    let cylinder = doc(
+        r#"[{"shape":"cylinder","x":0,"y":0,"z":0,"w":8,"d":8,"h":3,"material":"wood"}]"#,
+        false,
+    );
+    let bounding = doc(
+        r#"[{"x":0,"y":0,"z":0,"w":8,"d":8,"h":3,"material":"wood"}]"#,
+        false,
+    );
+    let a = render(&cylinder).unwrap();
+    let b = render(&bounding).unwrap();
+    let visible = |image: &image::RgbaImage| image.pixels().filter(|p| p[3] > 0).count();
+    assert!(visible(&a) > 0 && visible(&a) < visible(&b));
+}
+
+#[test]
+fn stairs_produce_several_height_levels() {
+    let stair = doc(
+        r#"[{"shape":"stairs_x","steps":4,"x":0,"y":0,"z":0,"w":8,"d":4,"h":8,"material":"wood"}]"#,
+        false,
+    );
+    let block = doc(
+        r#"[{"x":0,"y":0,"z":0,"w":8,"d":4,"h":8,"material":"wood"}]"#,
+        false,
+    );
+    assert_ne!(render(&stair).unwrap(), render(&block).unwrap());
+}
+
+#[test]
+fn invalid_step_count_is_rejected() {
+    let d = doc(
+        r#"[{"shape":"stairs_x","steps":9,"x":0,"y":0,"z":0,"w":4,"d":4,"h":4,"material":"wood"}]"#,
+        false,
+    );
+    assert!(render(&d).unwrap_err().contains("steps"));
+}
+
+#[test]
+fn unknown_shape_is_rejected_at_parse_time() {
+    let mut d: serde_json::Value = serde_json::to_value(doc(
+        r#"[{"x":0,"y":0,"z":0,"w":4,"d":4,"h":4,"material":"wood"}]"#,
+        false,
+    ))
+    .unwrap();
+    d["layers"][0]["commands"][0]["boxes"][0]["shape"] = "typo".into();
+    assert!(serde_json::from_value::<Document>(d).is_err());
+}
+
+#[test]
+fn expanded_shapes_accept_maximum_valid_input_coordinates() {
+    let d = doc(
+        r#"[{"shape":"cylinder","x":4096,"y":0,"z":0,"w":8,"d":8,"h":3,"material":"wood"}]"#,
+        false,
+    );
+    assert!(render(&d).is_ok());
+}
+#[test]
+fn expanded_shapes_share_depth_order_with_boxes() {
+    let a = r#"{"shape":"cylinder","x":0,"y":0,"z":0,"w":6,"d":6,"h":3,"material":"wood"}"#;
+    let b =
+        r#"{"shape":"stairs_y","steps":3,"x":1,"y":1,"z":1,"w":3,"d":6,"h":6,"material":"wood"}"#;
+    assert_eq!(
+        render(&doc(&format!("[{a},{b}]"), false)).unwrap(),
+        render(&doc(&format!("[{b},{a}]"), false)).unwrap()
+    );
+}
+
+#[test]
+fn stairs_y_and_x_project_differently() {
+    let x = doc(
+        r#"[{"shape":"stairs_x","steps":3,"x":0,"y":0,"z":0,"w":6,"d":6,"h":6,"material":"wood"}]"#,
+        false,
+    );
+    let y = doc(
+        r#"[{"shape":"stairs_y","steps":3,"x":0,"y":0,"z":0,"w":6,"d":6,"h":6,"material":"wood"}]"#,
+        false,
+    );
+    assert_ne!(
+        render(&x).unwrap().into_raw(),
+        render(&y).unwrap().into_raw()
+    );
+}
+#[test]
+fn shape_parameters_are_validated() {
+    for (input, expected) in [
+        (
+            r#"[{"shape":"cylinder","x":0,"y":0,"z":0,"w":65,"d":4,"h":2,"material":"wood"}]"#,
+            "cylinder",
+        ),
+        (
+            r#"[{"shape":"stairs_y","x":0,"y":0,"z":0,"w":2,"d":4,"h":4,"material":"wood"}]"#,
+            "steps",
+        ),
+        (
+            r#"[{"shape":"box","steps":1,"x":0,"y":0,"z":0,"w":2,"d":4,"h":4,"material":"wood"}]"#,
+            "steps",
+        ),
+        (
+            r#"[{"shape":"stairs_y","steps":0,"x":0,"y":0,"z":0,"w":2,"d":4,"h":4,"material":"wood"}]"#,
+            "steps",
+        ),
+    ] {
+        assert!(render(&doc(input, false)).unwrap_err().contains(expected));
+    }
+}
+#[test]
+fn scene_expansion_limit_is_enforced_before_rendering() {
+    let item = r#"{"shape":"cylinder","x":0,"y":0,"z":0,"w":64,"d":64,"h":1,"material":"wood"}"#;
+    let d = doc(&format!("[{}]", vec![item; 65].join(",")), false);
+    assert!(render(&d).unwrap_err().contains("4096"));
+}
+#[test]
+fn explicit_shape_fields_survive_serialization() {
+    let d = doc(
+        r#"[{"shape":"stairs_y","steps":3,"x":0,"y":0,"z":0,"w":4,"d":6,"h":6,"material":"wood"}]"#,
+        false,
+    );
+    let copy: Document = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(
+        render(&d).unwrap().into_raw(),
+        render(&copy).unwrap().into_raw()
+    );
+}
