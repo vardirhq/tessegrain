@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "canvas": {"width": 16, "height": 16},
+  "palette": {"outline": "#30241C", "wood": "#96613D", "light": "#C28B57"},
+  "layers": [{"name": "chair", "commands": [
+    {"op": "rect", "x": 4, "y": 1, "w": 8, "h": 9, "color": "outline"},
+    {"op": "rect", "x": 5, "y": 2, "w": 6, "h": 6, "color": "wood"},
+    {"op": "line", "from": [5, 2], "to": [10, 2], "color": "light"},
+    {"op": "rect", "x": 3, "y": 8, "w": 10, "h": 3, "color": "outline"},
+    {"op": "rect", "x": 4, "y": 8, "w": 8, "h": 2, "color": "wood"},
+    {"op": "rect", "x": 4, "y": 11, "w": 2, "h": 4, "color": "outline"},
+    {"op": "rect", "x": 10, "y": 11, "w": 2, "h": 4, "color": "outline"},
+    {"op": "grid", "x": 5, "y": 4, "colors": {".": "transparent", "X": "light"}, "rows": ["X.....", ".X....", "..X..."]}
+  ]}]
+}
